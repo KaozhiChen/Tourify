@@ -18,7 +18,7 @@ struct LoginView: View {
 
     var body: some View {
         if isLoggedIn {
-            HomeView()
+            MainTabView()
         } else {
             ZStack {
                 // background
