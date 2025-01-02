@@ -8,15 +8,25 @@
 import SwiftUI
 
 struct HomeView: View {
+    // init HomeViewModel
+    @StateObject private var viewModel = HomeViewModel()
+
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 20) {
-                    topBar
-                    popularPlacesSection
-                    recommendationSection
+            if viewModel.isLoading {
+                ProgressView("Loading...")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        topBar
+                        popularPlacesSection
+                        recommendationSection
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
+                .navigationTitle("Home") 
+                .navigationBarHidden(true)
             }
         }
     }
@@ -37,7 +47,7 @@ struct HomeView: View {
 
             Spacer()
 
-            // user
+            // user profile
             Button(action: {
                 // go to profile
             }) {
@@ -50,7 +60,7 @@ struct HomeView: View {
         .padding(.top, 10)
     }
 
-    // pop section
+    // popular places section
     private var popularPlacesSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -63,18 +73,18 @@ struct HomeView: View {
                 }) {
                     Text("See All")
                         .font(.subheadline)
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color("PrimaryBlue"))
                 }
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 15) {
-                    ForEach(0..<5) { index in
+                    ForEach(viewModel.popularPlaces) { place in
                         PopularPlaceCard(
-                            placeName: "Place \(index + 1)",
-                            location: "Location \(index + 1)",
-                            imageName: "placeholder",
-                            rating: Double.random(in: 4.0...5.0)
+                            placeName: place.name,
+                            location: place.location,
+                            imageName: place.imageUrl,
+                            rating: place.rating
                         )
                     }
                 }
@@ -82,7 +92,7 @@ struct HomeView: View {
         }
     }
 
-    // recommend section
+    // recommendation section
     private var recommendationSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
@@ -95,17 +105,17 @@ struct HomeView: View {
                 }) {
                     Text("See All")
                         .font(.subheadline)
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color("PrimaryBlue"))
                 }
             }
 
             VStack(spacing: 15) {
-                ForEach(0..<5) { index in
+                ForEach(viewModel.recommendedPlaces) { place in
                     RecommendationCard(
-                        placeName: "Recommended \(index + 1)",
-                        location: "Location \(index + 1)",
-                        price: "$\(index * 100 + 199) / Person",
-                        imageName: "placeholder"
+                        placeName: place.name,
+                        location: place.location,
+                        price: place.price ?? "$199 / Person",
+                        imageName: place.imageUrl
                     )
                 }
             }

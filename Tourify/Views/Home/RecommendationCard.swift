@@ -30,7 +30,7 @@ struct RecommendationCard: View {
                 Text(price)
                     .font(.subheadline)
                     .fontWeight(.bold)
-                    .foregroundColor(.blue)
+                    .foregroundColor(Color("PrimaryBlue"))
             }
 
             Spacer()
